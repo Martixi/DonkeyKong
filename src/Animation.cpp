@@ -3,23 +3,19 @@
 //
 #include "Magic.h"
 #include "Animation.h"
-#define ChangeThreshold 200
-#define AnimationWalkingFrames 8
+#include "Defines.h"
 
-void update(int UpdateCount, int StepCount, SDL_Texture *textures) {
-//	// run this every frame
-//	// changeThreshold  - change every N farmes
-//	// stepCount - Index of animation
-//	// numberOfSteps - max number of animation frames
-//	UpdateCount++;
-//	if (UpdateCount >= ChangeThreshold) {
-//		StepCount++;
-//		UpdateCount = 0;
-//	}
-//	if (StepCount >= AnimationWalkingFrames) {
-//		StepCount = 0;
-//	}
-//	StepCount*=128;
-////	srcRect.x+=128; ????????????????????????????????????????
-//	textures->moveSourceTo(StepCount, 0);
+//animating Marek
+void MarekAnim(GameEntity &player, Data &data, Check &value){
+	if (data.AnimFrames % data.frameChange == 0) {
+		player.currentFrame += 1;
+		player.size.x = player.size.w * player.currentFrame;
+	}
+	if (data.AnimFrames % (data.frameChange * (data.maxFrames - 1)) == 0 or player.currentFrame > 7) {
+		player.currentFrame = 0;
+	}
+	data.AnimFrames++;
+	if (value.falling) {
+		player.currentFrame = 7;
+	} else if (value.standing) player.currentFrame = 8;
 }

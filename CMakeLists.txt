@@ -18,7 +18,11 @@ add_executable(DonkeyKong src/main.cpp
         src/Animation.h
         src/Animation.cpp
         src/Drawing.h
-        src/Drawing.cpp)
+        src/Drawing.cpp
+        src/MainFunctions.h
+        src/MainFunctions.cpp
+        src/Ladders.h
+        src/Ladders.cpp)
 
 find_package(SDL2 REQUIRED)
 
