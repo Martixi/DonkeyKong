@@ -3,8 +3,8 @@
 //
 
 #include "Ladders.h"
-#include "Magic.h"
-#include "Defines.h"
+#include "../Magic/Magic.h"
+#include "../Defines.h"
 
 
 bool IsOnLadder(GameEntity player, SDL_Rect *ladders){

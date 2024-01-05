@@ -2,11 +2,8 @@
 // Created by admin on 03.01.2024.
 //
 
-#include "MainFunctions.h"
-#include "Defines.h"
-#include "Drawing.h"
-#include "Ladders.h"
-#include "Animation.h"
+#include "BuildRender.h"
+#include "../Drawing/Drawing.h"
 
 void PrepareGame(Sdl &sdl, GameObjects &objects, GameEntity &player, Colors &colors){
 	SDL_RenderSetLogicalSize(sdl.renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -97,16 +94,6 @@ void BasicRender(SDL_Texture *texture, SDL_Surface *screen, SDL_Renderer *render
 
 // checking if Marek is touching the floor
 
-bool OnFloor(GameEntity player, SDL_Rect *platforms){
-	int x = (int) player.position.x + MAREK_WIDTH/2;
-	int y = (int) player.position.y + MAREK_WIDTH;
-	for (int i = 0; i < PLATFORMS; ++platforms) {
-		i++;
-		if ((y >= platforms->y and y < platforms->y + platforms->h) and (x >= platforms->x and x<= platforms->x + platforms->w)) return true;
-	}
-	return false;
-}
-
 void LevelView(Sdl &sdl, char *text, Data &data, Colors colors, GameEntity player, GameObjects &objects){
 	SDL_FillRect(sdl.screen, nullptr, colors.black);
 	DrawSurface(sdl.screen, sdl.Level ,SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
@@ -142,85 +129,4 @@ void TimeUpdate(Data &data, double &delta){
 		data.frames = 0;
 		data.fpsTimer -= FPS_REFRESH_TIME;
 	}
-}
-void PlayerPositionX(GameEntity &player, Check &value, double delta){
-	if (!value.isClimbing )player.position.x += player.speed.x*delta;
-	if (player.position.x < 0) player.position.x = 0;
-	if (player.position.x > SCREEN_WIDTH -MAREK_WIDTH) player.position.x = SCREEN_WIDTH-MAREK_WIDTH;
-}
-void PlayerPositionY(GameEntity &player, Check &value, GameObjects objects, Data data, double delta, int gravity){
-	player.speed.y+= gravity*delta;
-	if (OnFloor(player, objects.platforms)) player.speed.y = 0;
-
-	player.position.y += player.speed.y*delta +data.moveValue*delta + data.jumpValue;
-	value.onLadder = IsOnLadder(player, objects.ladders);
-	if (value.wasOnLadder and !value.onLadder){
-		player.position.y = LadderOff(player, objects.platforms);
-		value.isClimbing = false;
-	}
-	value.wasOnLadder = value.onLadder;
-}
-void SetPlayerPosition(GameEntity &player, Check &value, GameObjects objects, Data data, double delta, int gravity){
-	PlayerPositionX(*&player, *&value, delta);
-	PlayerPositionY(*&player, *&value, objects, data, delta, gravity);
-}
-void FallingWalkingStanding(double &gravity, Check &value, GameEntity &player, GameObjects objects, Data &data) {
-	//Figuring out what player can do
-	if (player.speed.y == 0 or !OnFloor(player, objects.platforms)) value.canWalk = true;
-	else value.canWalk = false;
-	if (player.speed.x == 0) value.canClimb = true;
-	else value.canClimb = false;
-
-	//Figuring out what player is doing
-	if (gravity) value.falling = true;
-	else value.falling = false;
-	if (player.speed.x != 0){ value.walking = true; value.standing = false;}
-	else {value.walking = false; value.standing = true;}
-
-	//animating Marek
-	MarekAnim(*&player, *&data, *&value);
-}
-
-
-void Gravity(GameEntity player, GameObjects objects, double &gravity, Check &value){
-	if (OnFloor(player,objects.platforms) or IsOnLadder(player, objects.ladders)){
-		gravity = 0;
-		value.jump = false;
-	} else {
-		gravity = 150;
-		value.jump = true;
-	}
-}
-
-void Input(Data &data, bool &quit, GameEntity &player, Check &value){
-	while (SDL_PollEvent(&data.event)) {
-		switch (data.event.type) {
-			case SDL_KEYDOWN:
-				if (data.event.key.keysym.sym == SDLK_ESCAPE) quit = true; // Esc = Quit
-				else if (data.event.key.keysym.sym == SDLK_n){ // n = New game
-					player.position.x = MAREK_X;
-					player.position.y = MAREK_Y;
-					player.speed.x = 0;
-					player.speed.y = 0;
-					data.worldTime = 0;
-				}
-				else if (data.event.key.keysym.sym == SDLK_RIGHT and value.canWalk) player.speed.x = MAREK_SPEED;
-				else if (data.event.key.keysym.sym == SDLK_LEFT and value.canWalk) player.speed.x = -MAREK_SPEED;
-				else if (data.event.key.keysym.sym == SDLK_UP and value.onLadder and value.canClimb){ player.speed.y = -LADDER_SPEED; value.isClimbing = true;}
-				else if (data.event.key.keysym.sym == SDLK_DOWN and value.onLadder and value.canClimb){ player.speed.y = LADDER_SPEED; value.isClimbing = true;}
-				break;
-			case SDL_KEYUP:
-				if (data.event.key.keysym.sym == SDLK_UP or data.event.key.keysym.sym == SDLK_DOWN ){
-					player.speed.y = 0;
-				}
-				else if (data.event.key.keysym.sym == SDLK_RIGHT or data.event.key.keysym.sym == SDLK_LEFT){
-					player.speed.x = 0;
-				}
-				break;
-			case SDL_QUIT:
-				quit = true;
-				break;
-		}
-	}
-	data.frames++;
 }

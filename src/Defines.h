@@ -4,16 +4,18 @@
 
 #ifndef DONKEYKONG_DEFINES_H
 #define DONKEYKONG_DEFINES_H
-#include "Magic.h"
+#include "Magic/Magic.h"
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 //Marek data
 #define MAREK_X 18
-#define MAREK_Y 420
+#define MAREK_Y 300
 #define MAREK_WIDTH 32
 #define MAREK_SPEED 70
-#define LADDER_SPEED 50
+#define MAREK_JUMP 160
+#define LADDER_SPEED 100
+#define GRAVITY_VALUE 180
 //Platforms
 #define PLATFORMS 6
 #define PLATFORM_HEIGHT 15
@@ -75,6 +77,10 @@ struct Check{
 	bool canWalk = true;
 	bool canClimb = false;
 	bool jump = false;
+	bool collidingFloor = false;
+	bool ArrowDown = false;
+	bool ArrowUp = false;
+
 };
 struct Sdl{
 	SDL_Window *window = nullptr;

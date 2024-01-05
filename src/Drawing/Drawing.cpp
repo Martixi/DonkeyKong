@@ -3,8 +3,8 @@
 //
 
 #include "Drawing.h"
-#include "Magic.h"
-#include "Defines.h"
+#include "../Magic/Magic.h"
+#include "../Defines.h"
 
 bool loadAllTextures(SDL_Surface *&screen, SDL_Surface *&charset, SDL_Surface *&Background, SDL_Surface *&Level) {
 	screen = SDL_CreateRGBSurface(
@@ -89,5 +89,28 @@ void DrawPlatforms( Sdl &sdl, GameObjects &objects, Colors &colors ){
 	for (int j = 0; j < LADDERS; ++j) {
 		DrawRectangle(sdl.screen, ladders[j].x, ladders[j].y, ladders[j].w, ladders[j].h, colors.red, colors.red);
 	}
+}
+
+void MarekAnim(GameEntity &player, Data &data, Check &value, double gravity){
+	//Animation falling
+	if (gravity) value.falling = true;
+	else value.falling = false;
+
+	//Animation Walking and standing
+	if (player.speed.x != 0){ value.walking = true; value.standing = false;}
+	else {value.walking = false; value.standing = true;}
+
+
+	if (data.AnimFrames % data.frameChange == 0) {
+		player.currentFrame += 1;
+		player.size.x = player.size.w * player.currentFrame;
+	}
+	if (data.AnimFrames % (data.frameChange * (data.maxFrames - 1)) == 0 or player.currentFrame > 7) {
+		player.currentFrame = 0;
+	}
+	data.AnimFrames++;
+	if (value.falling) {
+		player.currentFrame = 7;
+	} else if (value.standing) player.currentFrame = 8;
 }
 

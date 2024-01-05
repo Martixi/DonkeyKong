@@ -5,7 +5,7 @@
 #ifndef DONKEYKONG_MAGIC_H
 #define DONKEYKONG_MAGIC_H
 
-#include "../sdl/include/SDL.h"
+#include "SDL.h"
 
 
 void SDL_SetMainReady();

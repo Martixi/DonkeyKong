@@ -4,8 +4,8 @@
 
 #ifndef DONKEYKONG_LADDERS_H
 #define DONKEYKONG_LADDERS_H
-#include "Magic.h"
-#include "Defines.h"
+#include "../Magic/Magic.h"
+#include "../Defines.h"
 
 bool IsOnLadder(GameEntity player, SDL_Rect *ladders);
 int LadderOff(GameEntity player, SDL_Rect *platforms);

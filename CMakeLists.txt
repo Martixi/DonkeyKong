@@ -9,20 +9,19 @@ set(SDL2_DIR ${CMAKE_SOURCE_DIR}/sdl/cmake/)
 #include_directories(${CMAKE_SOURCE_DIR}/sdl/include)
 
 add_executable(DonkeyKong src/main.cpp
-        src/Other.h
-        src/Other.cpp
         src/Defines.h
-        src/Magic.h
-        src/Magic.h
-        src/Magic.cpp
-        src/Animation.h
-        src/Animation.cpp
-        src/Drawing.h
-        src/Drawing.cpp
-        src/MainFunctions.h
-        src/MainFunctions.cpp
-        src/Ladders.h
-        src/Ladders.cpp)
+        src/Magic/Magic.h
+        src/Magic/Magic.h
+        src/Magic/Magic.cpp
+        src/Drawing/Drawing.h
+        src/Drawing/Drawing.cpp
+        src/GameRenderSetUp/BuildRender.h
+        src/GameRenderSetUp/BuildRender.cpp
+        src/Objects/Ladders.h
+        src/Objects/Ladders.cpp
+        src/Objects/Movement.cpp
+        src/Input/Input.cpp
+        src/help.cpp)
 
 find_package(SDL2 REQUIRED)
 
