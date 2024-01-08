@@ -5,14 +5,15 @@
 #include "BuildRender.h"
 #include "../Drawing/Drawing.h"
 
-void PrepareGame(Sdl &sdl, GameObjects &objects, GameEntity &player, Colors &colors){
+void PrepareGame(Sdl &sdl, GameObjects &objects, GameEntity &player, Colors &colors, GameEntity &enemy) {
 	SDL_RenderSetLogicalSize(sdl.renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
 	SDL_SetRenderDrawColor(sdl.renderer, 0, 0, 0, 255);
 	SDL_SetWindowTitle(sdl.window, "Hello there. General Kenobi!");
-	loadAllTextures(sdl.screen, sdl.charset, sdl.Background, sdl.Level);
+	loadAllTextures(sdl.screen, sdl.charset, sdl.Background, sdl.Level, sdl.Enemy);
 	BasicSetUp(objects.platforms, objects.ladders);
 	// Generating Marek
 	GenerateEntity(&player, sdl.renderer, "static/Marek.bmp", MAREK_WIDTH, MAREK_WIDTH, MAREK_X, MAREK_Y);
+	GenerateEntity(&enemy, sdl.renderer, "static/Bogdan.bmp", 64, 64, SCREEN_WIDTH/2-37, 104);
 	sdl.texture = SDL_CreateTexture(sdl.renderer, SDL_PIXELFORMAT_ARGB8888,
 	                                SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
 	colors = {SDL_MapRGB(sdl.screen->format, 0x00, 0x00, 0x00), SDL_MapRGB(sdl.screen->format, 0x79, 0xEE, 0xE3),
@@ -32,6 +33,7 @@ void GenerateEntity(GameEntity *player,SDL_Renderer *renderer, const char *bmp, 
 	player->size = {0, 0, width, height};
 }
 
+
 //Rendering a player
 
 void RenderPlayer(SDL_Renderer *renderer, GameEntity *player){
@@ -43,6 +45,16 @@ void RenderPlayer(SDL_Renderer *renderer, GameEntity *player){
 	};
 	if (player->speed.x < 0) SDL_RenderCopyEx(renderer, player->image, &player->size, &destination, 0, nullptr, SDL_FLIP_HORIZONTAL);
 	else SDL_RenderCopy(renderer, player->image, &player->size, &destination);
+}
+
+void RenderEnemy(SDL_Renderer *renderer, GameEntity *enemy){
+	SDL_Rect destination = {
+			int (enemy->position.x),
+			int (enemy->position.y),
+			enemy->size.w,
+			enemy->size.h
+	};
+	SDL_RenderCopy(renderer, enemy->image, &enemy->size, &destination);
 }
 
 //creating a texture
@@ -84,21 +96,23 @@ void BasicSetUp(SDL_Rect *platforms, SDL_Rect *ladders){
 	Ladder_Set_Up(ladders);
 }
 
-void BasicRender(SDL_Texture *texture, SDL_Surface *screen, SDL_Renderer *renderer,GameEntity *player){
+void
+BasicRender(SDL_Texture *texture, SDL_Surface *screen, SDL_Renderer *renderer, GameEntity *player, GameEntity *enemy) {
 	SDL_UpdateTexture(texture, nullptr, screen->pixels, screen->pitch);
 	SDL_RenderClear(renderer);
 	SDL_RenderCopy(renderer, texture, nullptr, nullptr);
 	RenderPlayer(renderer, player);
+	RenderEnemy(renderer, enemy);
 	SDL_RenderPresent(renderer);
 }
 
 // checking if Marek is touching the floor
 
-void LevelView(Sdl &sdl, char *text, Data &data, Colors colors, GameEntity player, GameObjects &objects){
+void
+LevelView(Sdl &sdl, char *text, Data &data, Colors colors, GameEntity player, GameObjects &objects, GameEntity Enemy) {
 	SDL_FillRect(sdl.screen, nullptr, colors.black);
 	DrawSurface(sdl.screen, sdl.Level ,SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
 	DrawRectangle(sdl.screen, 4, 4, SCREEN_WIDTH-8, 36, colors.cyan, colors.black);
-
 	snprintf(text, 128, "Pieklo jest na ziemi, czas cierpienia = %.1lf s  %.0lf klatek / s", data.worldTime, data.fps);
 	DrawString(sdl.screen, sdl.screen->w / 2 - strlen(text) * 8 / 2, 10, text, sdl.charset);
 	snprintf(text, 128, "Esc - wyjscie, \030 - przyspieszenie, \031 - zwolnienie");
@@ -107,7 +121,7 @@ void LevelView(Sdl &sdl, char *text, Data &data, Colors colors, GameEntity playe
 
 	//DrawPlatforms(*&sdl, *&objects, *&colors); // drawing platform and ladder structs
 
-	BasicRender(sdl.texture, sdl.screen, sdl.renderer, &player);
+	BasicRender(sdl.texture, sdl.screen, sdl.renderer, &player, &Enemy);
 }
 
 bool CheckLibrary(Sdl &sdl){

@@ -13,7 +13,7 @@
 #define MAREK_Y 300
 #define MAREK_WIDTH 32
 #define MAREK_SPEED 70
-#define MAREK_JUMP 160
+#define MAREK_JUMP 165
 #define LADDER_SPEED 100
 #define GRAVITY_VALUE 180
 //Platforms
@@ -85,7 +85,7 @@ struct Check{
 struct Sdl{
 	SDL_Window *window = nullptr;
 	SDL_Renderer *renderer = nullptr;
-	SDL_Surface *screen, *charset, *Background, *Level;
+	SDL_Surface *screen, *charset, *Background, *Level, *Enemy;
 	SDL_Texture *texture;
 };
 struct GameObjects{
@@ -94,7 +94,7 @@ struct GameObjects{
 struct Data{
 	double fpsTimer = 0, fps = 0, worldTime = 0;
 	double jumpValue = 0, moveValue = 0;
-	int AnimFrames = 0, maxFrames = 8, frameChange = 50;
+	int AnimFrames = 0, maxFrames = 8, frameChange = 50, AnimFramesEnemy = 1, maxFramesEnemy = 2, frameChangeEnemy = 80;
 	Uint32 startTick = SDL_GetTicks(), endTick, frames = 0;
 	SDL_Event event;
 };

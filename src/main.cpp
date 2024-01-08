@@ -7,10 +7,47 @@
 #include "Drawing/Drawing.h"
 
 
+void PlatformOnTheSide(GameEntity player, SDL_Rect *platforms, Check &values){
+	for (int i = 0; i < PLATFORMS; ++i) {
+		if (player.position.y >= platforms->y and player.position.y <= platforms->y + platforms->h){
+			if (player.position.x > platforms->x and player.position.x < platforms->x + platforms->w);
+		}
+	}
+}
+bool HeadCollision(GameEntity player, SDL_Rect *platforms, Check values){
+	double head = player.position.y;
+	if (!values.isClimbing){
+		for (int i = 0; i < PLATFORMS; ++i) {
+			if (head > platforms->y + platforms->h - 10 and head <= platforms->y + platforms->h
+			    and (int)player.position.x +player.width/2  >= platforms->x
+			    and (int)player.position.x + player.width/2 <= platforms->x + platforms->w) {
+				return true;
+			}
+			++platforms;
+		}
+	}
+	return false;
+}
+
+
+void InTheFloor(GameEntity &player, SDL_Rect *platforms, Check values){
+	double feet = (player.position.y+player.height)-1;
+	if (!values.isClimbing){
+		for (int i = 0; i < PLATFORMS; ++i) {
+			if (feet >= platforms->y and feet <= platforms->y + platforms->h
+			and (int)player.position.x +player.width/2  >= platforms->x
+			and (int)player.position.x + player.width/2 <= platforms->x + platforms->w) {
+					player.position.y = platforms->y -player.height;
+			}
+			++platforms;
+		}
+	}
+}
+
 
 int main(int argc, char **args) {
 	Sdl sdl;
-	GameEntity player;
+	GameEntity player, enemy;
 	GameObjects objects{};
 	Check value;
 	Data data;
@@ -20,7 +57,7 @@ int main(int argc, char **args) {
 	double delta, gravity = 0;
 
 	if (!CheckLibrary(sdl)) return 1;
-	PrepareGame(sdl, objects, player, colors);
+	PrepareGame(sdl, objects, player, colors, enemy);
 
 	// Actual game ---->
 	while (!quit) {
@@ -54,15 +91,22 @@ int main(int argc, char **args) {
 		player.speed.y += gravity * delta;
 		player.position.y += player.speed.y * delta;
 		//CorrectPlayerPositionY(player, objects.platforms, value, gravity);
-
+		InTheFloor(player, objects.platforms, value);
 		//position x and y
 
 		// perform checks
 		value.collidingFloor = OnFloor(player, objects.platforms);
 		value.onLadder = IsOnLadder(player, objects.ladders);
-
 		if (!IsOnLadder(player, objects.ladders)) {
-			if (OnFloor(player, objects.platforms)) {
+			if (HeadCollision(player, objects.platforms, value)){
+				gravity = GRAVITY_VALUE;
+				player.position.y -= player.speed.y * delta-gravity*delta;
+				player.position.x -= player.speed.x * delta;
+				player.speed.y = 0;
+
+				value.isClimbing = false;
+			}
+			else if (OnFloor(player, objects.platforms)) {
 				gravity = 0;
 				player.position.y -= player.speed.y * delta;
 				player.speed.y = 0;
@@ -89,9 +133,10 @@ int main(int argc, char **args) {
 
 		//animating Marek
 		MarekAnim(*&player, *&data, *&value, gravity);
+		EnemyAnim(*&enemy, *&data, *&value);
 
 		TimeUpdate(*&data, *&delta);
-		LevelView(sdl, text, data, colors, player, objects);
+		LevelView(sdl, text, data, colors, player, objects, enemy);
 
 		while (SDL_PollEvent(&data.event)) {
 			switch (data.event.type) {

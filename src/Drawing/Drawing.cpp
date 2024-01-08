@@ -6,7 +6,8 @@
 #include "../Magic/Magic.h"
 #include "../Defines.h"
 
-bool loadAllTextures(SDL_Surface *&screen, SDL_Surface *&charset, SDL_Surface *&Background, SDL_Surface *&Level) {
+bool loadAllTextures(SDL_Surface *&screen, SDL_Surface *&charset, SDL_Surface *&Background, SDL_Surface *&Level,
+                     SDL_Surface *&Enemy) {
 	screen = SDL_CreateRGBSurface(
 			0,
 			SCREEN_WIDTH, SCREEN_HEIGHT,
@@ -17,6 +18,7 @@ bool loadAllTextures(SDL_Surface *&screen, SDL_Surface *&charset, SDL_Surface *&
 	SDL_SetColorKey(charset, true, 0x000000);
 	Background = SDL_LoadBMP("static/Forest2.bmp");
 	Level = SDL_LoadBMP("static/zamek.bmp");
+	Enemy = SDL_LoadBMP("static/Bogdan.bmp");
 	SDL_SetColorKey(Level, true, 0x000000);
 	return true;
 }
@@ -109,8 +111,20 @@ void MarekAnim(GameEntity &player, Data &data, Check &value, double gravity){
 		player.currentFrame = 0;
 	}
 	data.AnimFrames++;
+
 	if (value.falling) {
 		player.currentFrame = 7;
 	} else if (value.standing) player.currentFrame = 8;
 }
 
+
+void EnemyAnim(GameEntity &Enemy, Data &data, Check &value){
+	if (data.AnimFramesEnemy % data.frameChangeEnemy == 0) {
+		Enemy.size.x = Enemy.size.w * Enemy.currentFrame;
+		Enemy.currentFrame += 1;
+	}
+	if (data.AnimFramesEnemy % (data.frameChangeEnemy * (data.maxFramesEnemy)) == 0) {
+		Enemy.currentFrame = 0;
+	}
+	data.AnimFramesEnemy++;
+}
