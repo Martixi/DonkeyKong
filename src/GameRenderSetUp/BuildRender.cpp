@@ -5,9 +5,9 @@
 #include "BuildRender.h"
 #include "../Drawing/Drawing.h"
 
-void
-PrepareGame(Sdl &sdl, GameObjects &objects, GameEntity &player, Colors &colors, GameEntity &enemy, GameEntity *barrels,
-            GameEntity &portal) {
+//Game set Up
+void PrepareGame(Sdl &sdl, GameObjects &objects, GameEntity &player,Colors &colors,
+				 GameEntity &enemy, GameEntity *barrels, GameEntity &portal) {
 	SDL_RenderSetLogicalSize(sdl.renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
 	SDL_SetRenderDrawColor(sdl.renderer, 0, 0, 0, 255);
 	SDL_SetWindowTitle(sdl.window, "Marek the demon slayer");
@@ -25,8 +25,7 @@ PrepareGame(Sdl &sdl, GameObjects &objects, GameEntity &player, Colors &colors, 
 	          SDL_MapRGB(sdl.screen->format, 0xFF, 0x00, 0x00)};
 }
 
-//creating an entity for ex: player, barrel, enemy etc...
-
+//Creating an entity for ex: player, barrel, enemy etc...
 void GenerateEntity(GameEntity *player, SDL_Renderer *renderer, const char *bmp, int width, int height, int startingX,
                     int startingY) {
 	player->image = TransformImage(bmp, renderer);
@@ -40,7 +39,6 @@ void GenerateEntity(GameEntity *player, SDL_Renderer *renderer, const char *bmp,
 
 
 //Rendering a player
-
 void RenderPlayer(SDL_Renderer *renderer, GameEntity *player) {
 	SDL_Rect destination = {
 			int(player->position.x),
@@ -53,6 +51,7 @@ void RenderPlayer(SDL_Renderer *renderer, GameEntity *player) {
 	else SDL_RenderCopy(renderer, player->image, &player->size, &destination);
 }
 
+//Rendering an enemy
 void RenderEnemy(SDL_Renderer *renderer, GameEntity *enemy) {
 	SDL_Rect destination = {
 			int(enemy->position.x),
@@ -63,6 +62,7 @@ void RenderEnemy(SDL_Renderer *renderer, GameEntity *enemy) {
 	SDL_RenderCopy(renderer, enemy->image, &enemy->size, &destination);
 }
 
+//Rendering barrels
 void RenderBarrel(SDL_Renderer *renderer, GameEntity *barrel){
 	SDL_Rect destination = {
 			int(barrel->position.x),
@@ -74,7 +74,7 @@ void RenderBarrel(SDL_Renderer *renderer, GameEntity *barrel){
 
 }
 
-//creating a texture
+//creating a texture, disposing of black background
 SDL_Texture *TransformImage(const char *bmp, SDL_Renderer *renderer) {
 	SDL_Surface *temporary = SDL_LoadBMP(bmp);
 	SDL_SetColorKey(temporary, true, 0x000000);
@@ -96,26 +96,27 @@ void Platform_Set_Up(SDL_Rect *platforms) {
 
 void Ladder_Set_Up(SDL_Rect *ladders) {
 	int ladder = 0;
-	ladders[ladder++] = {295, PLATFORM2_Y, LADDERS_WIDTH, LADDERS_HEIGHT};
-	ladders[ladder++] = {420, PLATFORM2_Y, LADDERS_WIDTH, LADDERS_HEIGHT};
-	ladders[ladder++] = {73, PLATFORM3_Y, LADDERS_WIDTH, LADDERS_HEIGHT - 2};
-	ladders[ladder++] = {524, PLATFORM3_Y, LADDERS_WIDTH, LADDERS_HEIGHT - 2};
-	ladders[ladder++] = {271, PLATFORM4_Y, LADDERS_WIDTH, LADDERS_HEIGHT - 2};
-	ladders[ladder++] = {340, PLATFORM4_Y, LADDERS_WIDTH, LADDERS_HEIGHT - 2};
-	ladders[ladder++] = {134, PLATFORM5_Y, LADDERS_WIDTH, LADDERS_HEIGHT - 3};
-	ladders[ladder++] = {482, PLATFORM5_Y, LADDERS_WIDTH, LADDERS_HEIGHT - 3};
-	ladders[ladder] = {391, PLATFORM6_Y, LADDERS_WIDTH, LADDERS_HEIGHT + 1};
+	ladders[ladder++] = {LADDER1X, PLATFORM2_Y, LADDERS_WIDTH, LADDERS_HEIGHT};
+	ladders[ladder++] = {LADDER2X, PLATFORM2_Y, LADDERS_WIDTH, LADDERS_HEIGHT};
+	ladders[ladder++] = {LADDER3X, PLATFORM3_Y, LADDERS_WIDTH, LADDERS_HEIGHT - 2};
+	ladders[ladder++] = {LADDER4X, PLATFORM3_Y, LADDERS_WIDTH, LADDERS_HEIGHT - 2};
+	ladders[ladder++] = {LADDER5X, PLATFORM4_Y, LADDERS_WIDTH, LADDERS_HEIGHT - 2};
+	ladders[ladder++] = {LADDER6X, PLATFORM4_Y, LADDERS_WIDTH, LADDERS_HEIGHT - 2};
+	ladders[ladder++] = {LADDER7X, PLATFORM5_Y, LADDERS_WIDTH, LADDERS_HEIGHT - 3};
+	ladders[ladder++] = {LADDER8X, PLATFORM5_Y, LADDERS_WIDTH, LADDERS_HEIGHT - 3};
+	ladders[ladder] = {LADDER9X, PLATFORM6_Y, LADDERS_WIDTH, LADDERS_HEIGHT + 1};
 
 }
 
+// Set up of platforms and ladders
 void BasicSetUp(SDL_Rect *platforms, SDL_Rect *ladders) {
 	Platform_Set_Up(platforms);
 	Ladder_Set_Up(ladders);
 }
 
-void
-BasicRender(SDL_Texture *texture, SDL_Surface *screen, SDL_Renderer *renderer, GameEntity *player, GameEntity *enemy,
-            GameEntity *barrels, GameEntity *portal) {
+//Full render of all game elements per frame
+void BasicRender(SDL_Texture *texture, SDL_Surface *screen, SDL_Renderer *renderer,
+				 GameEntity *player, GameEntity *enemy, GameEntity *barrels, GameEntity *portal) {
 	SDL_UpdateTexture(texture, nullptr, screen->pixels, screen->pitch);
 	SDL_RenderClear(renderer);
 	SDL_RenderCopy(renderer, texture, nullptr, nullptr);
@@ -131,22 +132,23 @@ BasicRender(SDL_Texture *texture, SDL_Surface *screen, SDL_Renderer *renderer, G
 
 }
 
-// checking if Marek is touching the floor
-
 void
+
+//Updating the screen to current state of the game every frame
 LevelView(Sdl &sdl, char *text, Data &data, Colors colors, GameEntity player, GameObjects &objects, GameEntity Enemy,
           GameEntity *barrels, GameEntity Portal) {
 	SDL_FillRect(sdl.screen, nullptr, colors.black);
 	DrawSurface(sdl.screen, sdl.Level, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
-	DrawRectangle(sdl.screen, 4, 4, SCREEN_WIDTH - 8, 36, colors.cyan, colors.black);
-	snprintf(text, 128, "Get the artefact, time that has passed = %.1lf s  %.0lf frames / s", data.worldTime, data.fps);
-	DrawString(sdl.screen, sdl.screen->w / 2 - strlen(text) * 8 / 2, 10, text, sdl.charset);
-	snprintf(text, 128, "Esc - quit, n - refresh game, all basic requirements met: 1-4 basic + A + C");
-	DrawString(sdl.screen, sdl.screen->w / 2 - strlen(text) * 8 / 2, 26, text, sdl.charset);
+	DrawRectangle(sdl.screen, RECTANGLE_PLACEMENT, RECTANGLE_PLACEMENT, SCREEN_WIDTH - 8, 36, colors.cyan, colors.black);
+	snprintf(text, TEXT_LENGTH, "Get the artefact, time that has passed = %.1lf s  %.0lf frames / s", data.worldTime, data.fps);
+	DrawString(sdl.screen, SCREEN_WIDTH/ 2 - strlen(text) * LETTER_WIDTH / 2, TIME_Y, text, sdl.charset);
+	snprintf(text, TEXT_LENGTH, "Esc - quit, n - refresh game, all basic requirements met: 1-4 basic + A + C");
+	DrawString(sdl.screen, SCREEN_WIDTH / 2 - strlen(text) * LETTER_WIDTH / 2, INFO_Y, text, sdl.charset);
 	//DrawPlatforms(*&sdl, *&objects, *&colors); // drawing platform and ladder structs
 	BasicRender(sdl.texture, sdl.screen, sdl.renderer, &player, &Enemy, barrels, &Portal);
 }
 
+//Checking if library can be used
 bool CheckLibrary(Sdl &sdl) {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 		printf("SDL_Init error: %s\n", SDL_GetError());
@@ -161,6 +163,7 @@ bool CheckLibrary(Sdl &sdl) {
 	return true;
 }
 
+//Updating the in-game time
 void TimeUpdate(Data &data, double &delta) {
 	data.endTick = SDL_GetTicks();
 	delta = (data.endTick - data.startTick) * 0.001;

@@ -6,8 +6,9 @@
 #include "../Magic/Magic.h"
 #include "../Defines.h"
 
-bool loadAllTextures(SDL_Surface *&screen, SDL_Surface *&charset, SDL_Surface *&Background, SDL_Surface *&Level,
-                     SDL_Surface *&Enemy) {
+//loading in all textures
+bool loadAllTextures(SDL_Surface *&screen, SDL_Surface *&charset, SDL_Surface *&Background,
+					 SDL_Surface *&Level,SDL_Surface *&Enemy) {
 	screen = SDL_CreateRGBSurface(
 			0,
 			SCREEN_WIDTH, SCREEN_HEIGHT,
@@ -16,13 +17,13 @@ bool loadAllTextures(SDL_Surface *&screen, SDL_Surface *&charset, SDL_Surface *&
 	);
 	charset = SDL_LoadBMP("static/cs8x8.bmp");
 	SDL_SetColorKey(charset, true, 0x000000);
-	Level = SDL_LoadBMP("static/zamek.bmp");
+	Level = SDL_LoadBMP("static/Temple.bmp");
 	Enemy = SDL_LoadBMP("static/Bogdan.bmp");
 	SDL_SetColorKey(Level, true, 0x000000);
 	return true;
 }
 
-
+//Writing text onto the screen
 void DrawString(SDL_Surface *screen, int x, int y, const char *text,
                 SDL_Surface *charset) {
 	int offX, offY;
@@ -46,7 +47,7 @@ void DrawString(SDL_Surface *screen, int x, int y, const char *text,
 		text++;
 	}
 }
-
+//Draw surface on screen
 void DrawSurface(SDL_Surface *screen, SDL_Surface *sprite, int x, int y) {
 	SDL_Rect dest;
 	SDL_Rect src[] = {};
@@ -57,12 +58,14 @@ void DrawSurface(SDL_Surface *screen, SDL_Surface *sprite, int x, int y) {
 	SDL_BlitSurface(sprite, nullptr, screen, &dest);
 }
 
+//Draw pixel onto screen
 void DrawPixel(SDL_Surface *surface, int x, int y, Uint32 color) {
 	int bpp = surface->format->BytesPerPixel;
 	Uint8 *p = (Uint8 *) surface->pixels + y * surface->pitch + x * bpp;
 	*(Uint32 *) p = color;
 }
 
+//Draw Line onto screen
 void DrawLine(SDL_Surface *screen, int x, int y, int l, int dx, int dy, Uint32 color) {
 	for (int i = 0; i < l; i++) {
 		DrawPixel(screen, x, y, color);
@@ -71,6 +74,7 @@ void DrawLine(SDL_Surface *screen, int x, int y, int l, int dx, int dy, Uint32 c
 	}
 }
 
+//Draw rectangle onto the screen
 void DrawRectangle(SDL_Surface *screen, int x, int y, int l, int k, Uint32 outlineColor, Uint32 fillColor) {
 	DrawLine(screen, x, y, k, 0, 1, outlineColor);
 	DrawLine(screen, x + l - 1, y, k, 0, 1, outlineColor);
@@ -80,10 +84,10 @@ void DrawRectangle(SDL_Surface *screen, int x, int y, int l, int k, Uint32 outli
 		DrawLine(screen, x + 1, i, l - 2, 1, 0, fillColor);
 }
 
+//Draw platforms and ladders if necessary - more of a developer function
 void DrawPlatforms(Sdl &sdl, GameObjects &objects, Colors &colors) {
 	SDL_Rect *platforms = objects.platforms;
 	SDL_Rect *ladders = objects.ladders;
-
 	for (int i = 0; i < PLATFORMS; ++i) {
 		DrawRectangle(sdl.screen, platforms[i].x, platforms[i].y, platforms[i].w, platforms[i].h, colors.cyan,
 		              colors.cyan);
@@ -93,11 +97,11 @@ void DrawPlatforms(Sdl &sdl, GameObjects &objects, Colors &colors) {
 	}
 }
 
+//Animation of Marek
 void MarekAnim(GameEntity &player, Data &data, Check &value, double gravity) {
 	//Animation falling
 	if (gravity) value.falling = true;
 	else value.falling = false;
-
 	//Animation Walking and standing
 	if (player.speed.x != 0) {
 		value.walking = true;
@@ -107,8 +111,7 @@ void MarekAnim(GameEntity &player, Data &data, Check &value, double gravity) {
 		value.walking = false;
 		value.standing = true;
 	}
-
-
+	//Running Animation
 	if (data.AnimFrames % data.frameChange == 0) {
 		player.currentFrame += 1;
 		player.size.x = player.size.w * player.currentFrame;
@@ -123,7 +126,7 @@ void MarekAnim(GameEntity &player, Data &data, Check &value, double gravity) {
 	} else if (value.standing) player.currentFrame = 8;
 }
 
-
+//Enemy animation
 void EnemyAnim(GameEntity &Enemy, Data &data, Check &value) {
 	if (data.AnimFramesEnemy % data.frameChangeEnemy == 0) {
 		Enemy.size.x = Enemy.size.w * Enemy.currentFrame;
@@ -135,6 +138,7 @@ void EnemyAnim(GameEntity &Enemy, Data &data, Check &value) {
 	data.AnimFramesEnemy++;
 }
 
+//Barrel animation
 void BarrelAnim(GameEntity *barrel, Data &data){
 	if (data.AnimFramesBarrels % data.frameChangeBarrels == 0) {
 		for (int i = 0; i < BARRELS_AMOUNT; ++i) {
@@ -148,7 +152,7 @@ void BarrelAnim(GameEntity *barrel, Data &data){
 	data.AnimFramesBarrels++;
 
 }
-
+//Portal Animation
 void PortalAnim(GameEntity &portal, Data &data){
 	if (data.AnimFramesPortal % data.frameChangePortal == 0) {
 		portal.currentFrame += 1;

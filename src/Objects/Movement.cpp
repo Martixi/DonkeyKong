@@ -5,7 +5,7 @@
 #include "Ladders.h"
 #include "../Drawing/Drawing.h"
 
-
+//Checks Game objects collision with floor
 bool OnFloor(GameEntity player, SDL_Rect *platforms){
 	int x = (int) player.position.x + player.width/2;
 	int y = (int) player.position.y + player.width;
@@ -19,6 +19,7 @@ bool OnFloor(GameEntity player, SDL_Rect *platforms){
 	return false;
 }
 
+//Sets position of player on board
 void SetPlayerPosition(GameEntity &player, Check &value, GameObjects objects, double delta, double gravity){
 	if (player.position.x < 0)
 		player.position.x = 0;
@@ -32,41 +33,10 @@ void SetPlayerPosition(GameEntity &player, Check &value, GameObjects objects, do
 	player.speed.y += gravity * delta;
 	player.position.y += player.speed.y * delta;
 }
-void FallingWalkingStanding(double &gravity, Check &value, GameEntity &player, GameObjects objects, Data &data, double delta) {
-	// perform checks
-	value.onLadder = IsOnLadder(player, objects.ladders);
 
-	if (!value.onLadder) {
-		if (OnFloor(player, objects.platforms)) {
-			// handle collision
-			gravity = 0;
-			// resolve collision FuckGoBack! don't move like that
-			player.position.y -= player.speed.y * delta;
-			player.speed.y = 0;
-
-			// rememeber to set jump
-			value.jump = false;
-		} else {
-			gravity = GRAVITY_VALUE;
-		}
-	} else {
-		// now we are on ladder
-		gravity = 0;
-	}
-
-	//Figuring out what player can do
-	if (player.speed.y == 0 or !OnFloor(player, objects.platforms)) value.canWalk = true;
-	else value.canWalk = false;
-	if (player.speed.x == 0) value.canClimb = true;
-	else value.canClimb = false;
-
-	//animating Marek
-	MarekAnim(*&player, *&data, *&value, gravity);
-}
-
+//Handles the gravity value of the player
 void Gravity(GameEntity &player, GameObjects &objects, double &gravity, Check &value) {
 	if (!IsOnLadder(player, objects.ladders)) value.isClimbing = false;
-
 
 	if (OnFloor(player, objects.platforms)) {
 		gravity = 0;
@@ -82,6 +52,7 @@ void Gravity(GameEntity &player, GameObjects &objects, double &gravity, Check &v
 	}
 }
 
+//Correction of player if stuck in floor
 void InTheFloor(GameEntity &player, SDL_Rect *platforms, Check values) {
 	double feet = (player.position.y + player.height) - 1;
 	if (!values.isClimbing) {
@@ -96,7 +67,7 @@ void InTheFloor(GameEntity &player, SDL_Rect *platforms, Check values) {
 	}
 }
 
-
+//Collision of player with sealing
 bool HeadCollision(GameEntity player, SDL_Rect *platforms, Check values) {
 	double head = player.position.y;
 	if (!values.isClimbing) {
@@ -120,9 +91,11 @@ void CheckConditionsForMovement(GameEntity &player, GameObjects objects, Check &
 
 }
 
+//Special adjustments for different scenarios connected to gravity
 void GravityCollisionChecks(Check &value, GameEntity &player, GameObjects &objects, double &gravity, double delta){
 	value.collidingFloor = OnFloor(player, objects.platforms);
 	value.onLadder = IsOnLadder(player, objects.ladders);
+	//hitting the platform with players head
 	if (!IsOnLadder(player, objects.ladders)) {
 		if (HeadCollision(player, objects.platforms, value)) {
 			gravity = GRAVITY_VALUE;
@@ -131,19 +104,21 @@ void GravityCollisionChecks(Check &value, GameEntity &player, GameObjects &objec
 			player.speed.y = 0;
 
 			value.isClimbing = false;
-		} else if (OnFloor(player, objects.platforms)) {
+		}
+		//player has fallen on to floor
+		else if (OnFloor(player, objects.platforms)) {
 			gravity = 0;
 			player.position.y -= player.speed.y * delta;
 			player.speed.y = 0;
 			value.isClimbing = false;
-
 			value.jump = false;
-		} else {
+		}
+		//player is falling
+		else {
 			gravity = GRAVITY_VALUE;
 		}
 	} else {
-		// now we are on ladder
+		//player's on ladder
 		gravity = 0;
-
 	}
 }

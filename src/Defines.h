@@ -23,6 +23,7 @@
 #define MAREK_JUMP 170
 #define LADDER_SPEED 100
 #define GRAVITY_VALUE 180
+#define MAREK_COLLISION_CORRECTION 5
 
 //Barrels
 #define BARRELS_AMOUNT 6
@@ -32,6 +33,7 @@
 #define BARRELS_Y 114
 #define BARREL_SPEED 70
 #define BARREL_FREQUENCY 5
+#define BARREL_GRAVITY 70
 
 //Platforms
 #define PLATFORMS 6
@@ -59,10 +61,26 @@
 #define LADDERS 9
 #define LADDERS_WIDTH 20
 #define LADDERS_HEIGHT 76
+#define LADDER1X 295
+#define LADDER2X 420
+#define LADDER3X 73
+#define LADDER4X 524
+#define LADDER5X 271
+#define LADDER6X 340
+#define LADDER7X 134
+#define LADDER8X 482
+#define LADDER9X 391
 
 //fps data
 #define FPS_REFRESH_TIME 0.5
 #define FPS_ADJUSTED_TIME (1 / FPS_REFRESH_TIME)
+
+//Drawing
+#define RECTANGLE_PLACEMENT 4
+#define TEXT_LENGTH 128
+#define TIME_Y 10
+#define INFO_Y 26
+#define LETTER_WIDTH 8
 
 //structs
 struct Position{

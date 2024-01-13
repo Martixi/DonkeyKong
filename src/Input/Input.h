@@ -8,4 +8,6 @@
 
 void KeyN(GameEntity &player, GameEntity *barrels, Data &data);
 void InputKey(Data &data, Check &value, GameEntity &player, GameEntity *barrels, GameObjects objects, bool &quit);
+void MovementKeys(GameEntity &player, Data &data, Check &value);
+void KeyLifted(Data &data, Check &value, GameEntity &player, GameObjects objects);
 #endif //DONKEYKONG_INPUT_H

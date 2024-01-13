@@ -6,7 +6,7 @@
 #include "../Magic/Magic.h"
 #include "../Defines.h"
 
-
+//Checks if player is currently on the ladder
 bool IsOnLadder(GameEntity player, SDL_Rect *ladders){
 	int player_center_x = (int) player.position.x + player.width/2;
 	float player_foots = (float) player.position.y + player.width;
@@ -20,13 +20,4 @@ bool IsOnLadder(GameEntity player, SDL_Rect *ladders){
 		++i;
 	}
 	return false;
-}
-int LadderOff(GameEntity player, SDL_Rect *platforms){
-	int y = (int) player.position.y + MAREK_WIDTH;
-	for (int i = 0; i < PLATFORMS; ++platforms) {
-		++i;
-		if (y == platforms->y+1 ) return (int) player.position.y -1;
-		if (y == platforms->y-1 ) return (int) player.position.y +1;
-	}
-	return (int) player.position.y;
 }
