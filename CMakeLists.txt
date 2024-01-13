@@ -21,7 +21,9 @@ add_executable(DonkeyKong src/main.cpp
         src/Objects/Ladders.cpp
         src/Objects/Movement.cpp
         src/Input/Input.cpp
-        src/help.cpp)
+        src/Objects/Barrels.h
+        src/Objects/Barrels.cpp
+)
 
 find_package(SDL2 REQUIRED)
 

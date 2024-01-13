@@ -8,13 +8,13 @@
 
 
 bool IsOnLadder(GameEntity player, SDL_Rect *ladders){
-	int player_center_x = (int) player.position.x + MAREK_WIDTH/2;
-	int player_foots = (int) player.position.y + MAREK_WIDTH;
+	int player_center_x = (int) player.position.x + player.width/2;
+	float player_foots = (float) player.position.y + player.width;
 	for (int i = 0; i < LADDERS; ladders++) {
 		if ((player_center_x > ladders->x) and
 		    (player_center_x < ladders->x + ladders->w) and
-		    (player_foots >= ladders->y) and
-		    (player_foots <= ladders->y+ladders->h)){
+		    (player_foots >= (float) ladders->y) and
+		    (player_foots <= (float) (ladders->y+ladders->h))){
 			return true;
 		}
 		++i;

@@ -8,14 +8,31 @@
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
+
+//Portals
+#define PORTAL_WIDTH 64
+#define PORTAL_HEIGHT 16
+#define PORTAL_X 225
+#define PORTAL_Y 111
+
 //Marek data
 #define MAREK_X 18
-#define MAREK_Y 300
+#define MAREK_Y 400
 #define MAREK_WIDTH 32
 #define MAREK_SPEED 70
-#define MAREK_JUMP 165
+#define MAREK_JUMP 170
 #define LADDER_SPEED 100
 #define GRAVITY_VALUE 180
+
+//Barrels
+#define BARRELS_AMOUNT 6
+#define BARRELS_WIDTH 16
+#define BARRELS_HEIGHT 18
+#define BARRELS_X 250
+#define BARRELS_Y 114
+#define BARREL_SPEED 70
+#define BARREL_FREQUENCY 5
+
 //Platforms
 #define PLATFORMS 6
 #define PLATFORM_HEIGHT 15
@@ -37,17 +54,15 @@
 #define PLATFORM6_X 165
 #define PLATFORM6_Y 91
 #define PLATFORM6_WIDTH (SCREEN_WIDTH-343)
+
 //Ladders
 #define LADDERS 9
 #define LADDERS_WIDTH 20
 #define LADDERS_HEIGHT 76
+
 //fps data
 #define FPS_REFRESH_TIME 0.5
 #define FPS_ADJUSTED_TIME (1 / FPS_REFRESH_TIME)
-//colors
-#define BLACK SDL_MapRGB(sdl.screen->format, 0x00, 0x00, 0x00)
-#define CYAN SDL_MapRGB(sdl.screen->format, 0x79, 0xEE, 0xE3)
-#define RED SDL_MapRGB(sdl.screen->format, 0xFF, 0x00, 0x00)
 
 //structs
 struct Position{
@@ -69,7 +84,6 @@ struct GameEntity{
 };
 struct Check{
 	bool onLadder = false;
-	bool wasOnLadder = false;
 	bool isClimbing = false;
 	bool falling = false;
 	bool  walking = false;
@@ -94,7 +108,10 @@ struct GameObjects{
 struct Data{
 	double fpsTimer = 0, fps = 0, worldTime = 0;
 	double jumpValue = 0, moveValue = 0;
-	int AnimFrames = 0, maxFrames = 8, frameChange = 50, AnimFramesEnemy = 1, maxFramesEnemy = 2, frameChangeEnemy = 80;
+	int AnimFrames = 0, maxFrames = 8, frameChange = 50;
+	int AnimFramesEnemy = 0, maxFramesEnemy = 2, frameChangeEnemy = 80;
+	int AnimFramesBarrels = 0, maxFramesBarrel = 4, frameChangeBarrels = 35;
+	int AnimFramesPortal = 0, maxFramesPortal = 7, frameChangePortal = 50;
 	Uint32 startTick = SDL_GetTicks(), endTick, frames = 0;
 	SDL_Event event;
 };

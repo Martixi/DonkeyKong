@@ -4,6 +4,7 @@
 
 #ifndef DONKEYKONG_DRAWING_H
 #define DONKEYKONG_DRAWING_H
+
 #include "../Magic/Magic.h"
 #include "../Defines.h"
 
@@ -14,8 +15,11 @@ void DrawLine(SDL_Surface *screen, int x, int y, int l, int dx, int dy, Uint32 c
 void DrawRectangle(SDL_Surface *screen, int x, int y, int l, int k, Uint32 outlineColor, Uint32 fillColor);
 bool loadAllTextures(SDL_Surface *&screen, SDL_Surface *&charset, SDL_Surface *&Background, SDL_Surface *&Level,
                      SDL_Surface *&Enemy);
-void DrawPlatforms( Sdl &sdl, GameObjects &objects, Colors &colors );
+void DrawPlatforms(Sdl &sdl, GameObjects &objects, Colors &colors);
 void MarekAnim(GameEntity &player, Data &data, Check &value, double gravity);
 void EnemyAnim(GameEntity &Enemy, Data &data, Check &value);
-
+void BarrelAnim(GameEntity *barrel, Data &data);
+void PortalAnim(GameEntity &portal, Data &data);
+void Animations(GameEntity &player, Data &data, Check &value, GameEntity &enemy,
+                GameEntity &portal, GameEntity *barrels, double &gravity);
 #endif //DONKEYKONG_DRAWING_H

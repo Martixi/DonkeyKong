@@ -16,7 +16,6 @@ bool loadAllTextures(SDL_Surface *&screen, SDL_Surface *&charset, SDL_Surface *&
 	);
 	charset = SDL_LoadBMP("static/cs8x8.bmp");
 	SDL_SetColorKey(charset, true, 0x000000);
-	Background = SDL_LoadBMP("static/Forest2.bmp");
 	Level = SDL_LoadBMP("static/zamek.bmp");
 	Enemy = SDL_LoadBMP("static/Bogdan.bmp");
 	SDL_SetColorKey(Level, true, 0x000000);
@@ -81,26 +80,33 @@ void DrawRectangle(SDL_Surface *screen, int x, int y, int l, int k, Uint32 outli
 		DrawLine(screen, x + 1, i, l - 2, 1, 0, fillColor);
 }
 
-void DrawPlatforms( Sdl &sdl, GameObjects &objects, Colors &colors ){
+void DrawPlatforms(Sdl &sdl, GameObjects &objects, Colors &colors) {
 	SDL_Rect *platforms = objects.platforms;
 	SDL_Rect *ladders = objects.ladders;
 
 	for (int i = 0; i < PLATFORMS; ++i) {
-		DrawRectangle(sdl.screen, platforms[i].x, platforms[i].y, platforms[i].w, platforms[i].h, colors.cyan, colors.cyan);
+		DrawRectangle(sdl.screen, platforms[i].x, platforms[i].y, platforms[i].w, platforms[i].h, colors.cyan,
+		              colors.cyan);
 	}
 	for (int j = 0; j < LADDERS; ++j) {
 		DrawRectangle(sdl.screen, ladders[j].x, ladders[j].y, ladders[j].w, ladders[j].h, colors.red, colors.red);
 	}
 }
 
-void MarekAnim(GameEntity &player, Data &data, Check &value, double gravity){
+void MarekAnim(GameEntity &player, Data &data, Check &value, double gravity) {
 	//Animation falling
 	if (gravity) value.falling = true;
 	else value.falling = false;
 
 	//Animation Walking and standing
-	if (player.speed.x != 0){ value.walking = true; value.standing = false;}
-	else {value.walking = false; value.standing = true;}
+	if (player.speed.x != 0) {
+		value.walking = true;
+		value.standing = false;
+	}
+	else {
+		value.walking = false;
+		value.standing = true;
+	}
 
 
 	if (data.AnimFrames % data.frameChange == 0) {
@@ -118,7 +124,7 @@ void MarekAnim(GameEntity &player, Data &data, Check &value, double gravity){
 }
 
 
-void EnemyAnim(GameEntity &Enemy, Data &data, Check &value){
+void EnemyAnim(GameEntity &Enemy, Data &data, Check &value) {
 	if (data.AnimFramesEnemy % data.frameChangeEnemy == 0) {
 		Enemy.size.x = Enemy.size.w * Enemy.currentFrame;
 		Enemy.currentFrame += 1;
@@ -127,4 +133,37 @@ void EnemyAnim(GameEntity &Enemy, Data &data, Check &value){
 		Enemy.currentFrame = 0;
 	}
 	data.AnimFramesEnemy++;
+}
+
+void BarrelAnim(GameEntity *barrel, Data &data){
+	if (data.AnimFramesBarrels % data.frameChangeBarrels == 0) {
+		for (int i = 0; i < BARRELS_AMOUNT; ++i) {
+			barrel[i].currentFrame += 1;
+			barrel[i].size.x = barrel[i].size.w * (barrel[i].currentFrame-1);
+		}
+	}
+	if (data.AnimFramesBarrels % (data.frameChangeBarrels * (data.maxFramesBarrel)) == 0) {
+		for (int i = 0; i < BARRELS_AMOUNT; ++i) {barrel[i].currentFrame = 0;}
+	}
+	data.AnimFramesBarrels++;
+
+}
+
+void PortalAnim(GameEntity &portal, Data &data){
+	if (data.AnimFramesPortal % data.frameChangePortal == 0) {
+		portal.currentFrame += 1;
+		portal.size.x = portal.size.w * (portal.currentFrame-1);
+	}
+	if (data.AnimFramesPortal % (data.frameChangePortal * (data.maxFramesPortal)) == 0) {
+		portal.currentFrame = 0;
+	}
+	data.AnimFramesPortal++;
+}
+
+void Animations(GameEntity &player, Data &data, Check &value, GameEntity &enemy,
+				GameEntity &portal, GameEntity *barrels, double &gravity){
+	MarekAnim(player, data, value, gravity);
+	EnemyAnim(enemy, data, value);
+	PortalAnim(portal, data);
+	BarrelAnim(barrels, data);
 }

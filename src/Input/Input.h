@@ -6,6 +6,6 @@
 #define DONKEYKONG_INPUT_H
 #include "../Defines.h"
 
-void Input(Data &data, bool &quit, GameEntity &player, Check &value, GameObjects &objects);
-
+void KeyN(GameEntity &player, GameEntity *barrels, Data &data);
+void InputKey(Data &data, Check &value, GameEntity &player, GameEntity *barrels, GameObjects objects, bool &quit);
 #endif //DONKEYKONG_INPUT_H
