@@ -4,7 +4,7 @@
 
 #ifndef DONKEYKONG_DEFINES_H
 #define DONKEYKONG_DEFINES_H
-#include "Magic/Magic.h"
+#include "Other/Other.h"
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
@@ -31,9 +31,9 @@
 #define BARRELS_HEIGHT 18
 #define BARRELS_X 250
 #define BARRELS_Y 114
-#define BARREL_SPEED 70
+#define BARREL_SPEED 80
 #define BARREL_FREQUENCY 5
-#define BARREL_GRAVITY 70
+#define BARREL_GRAVITY 80
 
 //Platforms
 #define PLATFORMS 6

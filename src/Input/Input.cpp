@@ -1,7 +1,7 @@
 //
 // Created by admin on 20.12.2023.
 //
-#include "../Magic/Magic.h"
+#include "../Other/Other.h"
 #include "Input.h"
 #include "../Objects/Movement.h"
 

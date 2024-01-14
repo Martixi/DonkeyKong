@@ -5,7 +5,7 @@
 #ifndef DONKEYKONG_BUILDRENDER_H
 #define DONKEYKONG_BUILDRENDER_H
 
-#include "../Magic/Magic.h"
+#include "../Other/Other.h"
 #include "../Defines.h"
 #include "cstdio"
 

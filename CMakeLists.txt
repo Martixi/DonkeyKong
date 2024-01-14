@@ -10,9 +10,9 @@ set(SDL2_DIR ${CMAKE_SOURCE_DIR}/sdl/cmake/)
 
 add_executable(DonkeyKong src/main.cpp
         src/Defines.h
-        src/Magic/Magic.h
-        src/Magic/Magic.h
-        src/Magic/Magic.cpp
+        src/Other/Other.h
+        src/Other/Other.h
+        src/Other/Other.cpp
         src/Drawing/Drawing.h
         src/Drawing/Drawing.cpp
         src/GameRenderSetUp/BuildRender.h

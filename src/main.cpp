@@ -1,10 +1,11 @@
-#include "Magic/Magic.h"
+#include "Other/Other.h"
 #include "Defines.h"
 #include "GameRenderSetUp/BuildRender.h"
 #include "Objects/Movement.h"
 #include "Input/Input.h"
 #include "Drawing/Drawing.h"
 #include "Objects/Barrels.h"
+
 int main(int argc, char **args) {
 	Sdl sdl;
 	GameEntity player, enemy, barrels[BARRELS_AMOUNT], portal;

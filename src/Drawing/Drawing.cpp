@@ -3,7 +3,7 @@
 //
 
 #include "Drawing.h"
-#include "../Magic/Magic.h"
+#include "../Other/Other.h"
 #include "../Defines.h"
 
 //loading in all textures

@@ -5,9 +5,9 @@
 #ifndef DONKEYKONG_DRAWING_H
 #define DONKEYKONG_DRAWING_H
 
-#include "../Magic/Magic.h"
+#include "../Other/Other.h"
 #include "../Defines.h"
-
+//
 void DrawString(SDL_Surface *screen, int x, int y, const char *text, SDL_Surface *charset);
 void DrawSurface(SDL_Surface *screen, SDL_Surface *sprite, int x, int y);
 void DrawPixel(SDL_Surface *surface, int x, int y, Uint32 color);

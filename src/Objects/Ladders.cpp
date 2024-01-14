@@ -3,7 +3,7 @@
 //
 
 #include "Ladders.h"
-#include "../Magic/Magic.h"
+#include "../Other/Other.h"
 #include "../Defines.h"
 
 //Checks if player is currently on the ladder

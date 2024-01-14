@@ -5,7 +5,7 @@
 #ifndef DONKEYKONG_MOVEMENT_H
 #define DONKEYKONG_MOVEMENT_H
 
-#include "../Magic/Magic.h"
+#include "../Other/Other.h"
 #include "../Defines.h"
 
 bool OnFloor(GameEntity player, SDL_Rect *platforms);
